@@ -1,0 +1,13 @@
+{
+  "version": "1.5.3",
+  "compilerOptions": {
+    "declaration": true,
+    "module": "amd",
+    "out": "dist/angular.request.retry.js",
+    "target": "es5",
+    "sourceMap": true
+  },
+  "files": [
+    "src/_all.d.ts"
+  ]
+}
