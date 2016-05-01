@@ -14,6 +14,8 @@
     "retry"
   ],
   "author": "James Keys",
+  "repository": "codiumco/angular-request-retry",
+  "license": "MIT",
   "devDependencies": {
     "angular": "^1.5.5",
     "angular-mocks": "^1.5.5",
