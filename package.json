@@ -14,7 +14,6 @@
     "retry"
   ],
   "author": "James Keys",
-  "license": "ISC",
   "devDependencies": {
     "angular": "^1.5.5",
     "angular-mocks": "^1.5.5",
