@@ -2,6 +2,7 @@
 
 module AngularRequestRetry {
   import IPromise = angular.IPromise;
+  import IHttpPromise = angular.IHttpPromise;
   "use strict";
 
   export interface IRequestConfig extends ng.IRequestConfig {
@@ -10,12 +11,16 @@ module AngularRequestRetry {
   export interface IXhrFactory<T> extends ng.IXhrFactory<T> {
     (): T
   }
+  export interface IRequestRetryService {
+    http<T>(config: IRequestConfig, retries?: number): IHttpPromise<T>
+  }
 
-  export function RequestRetryService($log:ng.ILogService,
-                                      $q:ng.IQService,
-                                      $timeout:ng.ITimeoutService,
-                                      $xhrFactory:IXhrFactory<XMLHttpRequest>) {
+  export class RequestRetryService implements IRequestRetryService {
 
+    constructor (private $log: ng.ILogService,
+                 private $q: ng.IQService,
+                 private $timeout: ng.ITimeoutService,
+                 private $xhrFactory: IXhrFactory<XMLHttpRequest>) {}
     /**
      * Make an http request and retry it numRetries times before failing hard.
      * @param {Object} config - HttpConfig-ish object
@@ -27,10 +32,10 @@ module AngularRequestRetry {
      * @param {Number} [retries]
      * @returns {Promise}
      */
-    this.http = (config:IRequestConfig, retries:number): IPromise<any> => {
-      var deferred = $q.defer();
+    http = (config, retries) => {
+      var deferred = this.$q.defer();
 
-      var xhr = $xhrFactory();
+      var xhr = this.$xhrFactory();
       xhr.open(config.method, config.url);
 
       angular.forEach(config.headers, function (value, key) {
@@ -38,17 +43,17 @@ module AngularRequestRetry {
       });
 
       xhr.onerror = (err) => {
-        $log.debug('Request error:', err, config);
+        this.$log.debug('Request error:', err, config);
         if (angular.isUndefined(retries)) {
           retries = NUM_RETRIES;
         }
 
         if (retries === 0) {
-          $log.error('Given up trying.', config);
+          this.$log.error('Given up trying.', config);
           deferred.reject(err);
         } else {
           var delay = 1000 * Math.pow(2, NUM_RETRIES - retries);  // exponential backoff, 1 second, then 2, then 4 ... etc
-          deferred.resolve($timeout(() => {
+          deferred.resolve(this.$timeout(() => {
             return this.http(config, --retries);
           }, delay));
         }
@@ -72,12 +77,10 @@ module AngularRequestRetry {
       xhr.send(config.data);
       config.timeout.then(() => {
         xhr.abort();
-        deferred.reject('Upload cancelled');
+        deferred.reject('Request cancelled');
       });
 
       return deferred.promise;
     };
-    return this;
   }
-  RequestRetryService.$inject = ['$log', '$q', '$timeout', '$xhrFactory'];
 }
