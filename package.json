@@ -1,6 +1,6 @@
 {
   "name": "angular-request-retry",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Automatically retry failed http requests with angular transparently using angular's promise API.",
   "main": "dist/angular.request.retry.js",
   "scripts": {
