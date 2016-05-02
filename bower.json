@@ -1,0 +1,24 @@
+{
+  "name": "angular-request-retry",
+  "description": "Automatically retry failed http requests with angular transparently using angular's promise API.",
+  "main": "dist/angular.request.retry.js",
+  "authors": [
+    "James Keys"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "http",
+    "request",
+    "retry"
+  ],
+  "homepage": "https://github.com/codiumco/angular-request-retry",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
