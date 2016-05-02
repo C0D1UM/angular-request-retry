@@ -2,19 +2,20 @@
 
 module AngularRequestRetry {
   "use strict";
-  export var NUM_RETRIES:number = 3;
-
   export class RequestRetryProvider implements ng.IServiceProvider {
 
-    $inject: string[] = [];
+    constructor () {
+      this.$get.$inject = ['$log', '$q', '$timeout', '$xhrFactory'];
+    }
 
-    $get = _getter;
+    $inject: string[] = [];
+    numRetries: number = 3;
+
+    $get = ($log, $q, $timeout, $xhrFactory) => {
+      return new RequestRetryService($log, $q, $timeout, $xhrFactory, this.numRetries);
+    };
     setNumRetries = (value: number): void => {
-      NUM_RETRIES = value;
+      this.numRetries = value;
     }
   }
-  export function _getter ($log, $q, $timeout, $xhrFactory) {
-    return new RequestRetryService($log, $q, $timeout, $xhrFactory);
-  }
-  _getter.$inject = ['$log', '$q', '$timeout', '$xhrFactory'];
 }
